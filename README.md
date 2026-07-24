@@ -75,6 +75,11 @@ A leitura do botão passa por um debounce baseado em tempo (50 ms): só é consi
 - Cenários de teste automatizados (`test_1.yaml`, `test_2.yaml`, `test_3.yaml`) validados via Wokwi CI.
 
 ---
+## Observação sobre a Pipeline (CI)
+ 
+Durante a execução via GitHub Actions, foi observado que alguns jobs finalizam com `Timeout: simulation did not finish in 10000ms` (exit code 42), mesmo com os logs mostrando que o cenário correspondente já havia validado corretamente todos os seus passos (`wait-serial` etc.). Isso ocorre porque a action `wokwi/wokwi-ci-action@v1`, internamente, sempre executa `wokwi-cli --expect-text "$CI_EXPECT_TEXT"` além do `scenario` informado; como o workflow atual não define o input `expect_text`, essa variável fica vazia e o processo permanece aguardando até estourar o timeout, mesmo após o cenário ter passado. Ou seja, trata-se de um comportamento da configuração do pipeline (arquivo de workflow), e não de uma falha no firmware desenvolvido.
+ 
+---
 
 ## Comentários Adicionais
 
